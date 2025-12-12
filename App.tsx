@@ -28,13 +28,13 @@ const App: React.FC = () => {
   const NavItem = ({ id, icon: Icon, label }: { id: ViewState, icon: any, label: string }) => (
     <button
       onClick={() => { setView(id); setMobileMenuOpen(false); }}
-      className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 w-full btn-haptic
+      className={`group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 w-full btn-haptic
         ${view === id 
-          ? 'bg-blue-500 text-white font-semibold shadow-md shadow-blue-200' 
-          : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900 font-medium'}`}
+          ? 'bg-blue-500 text-white font-medium shadow-md shadow-blue-200' 
+          : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'}`}
     >
-      <Icon className={`w-5 h-5 ${view === id ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'}`} />
-      <span className="text-sm tracking-wide">{label}</span>
+      <Icon className={`w-4 h-4 ${view === id ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'}`} />
+      <span className="text-sm tracking-tight">{label}</span>
     </button>
   );
 
@@ -43,33 +43,33 @@ const App: React.FC = () => {
       <div className="min-h-screen bg-[#F5F5F7] flex flex-col md:flex-row font-sans selection:bg-blue-100 selection:text-blue-900">
         
         {/* Desktop Sidebar (Apple Sidebar Style) */}
-        <aside className="hidden md:flex flex-col w-[280px] bg-[#FBFBFD]/80 backdrop-blur-xl border-r border-gray-200/50 h-screen sticky top-0 z-30">
-          <div className="p-8 pb-4">
-            <h1 className="text-2xl font-bold tracking-tight text-gray-900 leading-tight">
+        <aside className="hidden md:flex flex-col w-[240px] bg-[#FBFBFD]/80 backdrop-blur-xl border-r border-gray-200/50 h-screen sticky top-0 z-30">
+          <div className="p-6 pb-2">
+            <h1 className="text-lg font-bold tracking-tight text-gray-900 leading-tight">
               Hardware<span className="text-blue-500">POS</span>
             </h1>
-            <p className="text-xs font-medium text-gray-400 mt-1 uppercase tracking-wider">Engr Quilang • Cabbo</p>
+            <p className="text-[10px] font-medium text-gray-400 mt-1 uppercase tracking-wider">Engr Quilang • Cabbo</p>
           </div>
           
-          <nav className="flex-1 px-4 space-y-1 mt-4">
-            <div className="mb-2 px-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">Store</div>
+          <nav className="flex-1 px-3 space-y-0.5 mt-6">
+            <div className="mb-2 px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Store</div>
             <NavItem id="POS" icon={LayoutGrid} label="Point of Sale" />
             <NavItem id="INVENTORY" icon={Package} label="Inventory" />
             
-            <div className="mt-8 mb-2 px-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">Management</div>
+            <div className="mt-6 mb-2 px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Management</div>
             <NavItem id="ACCOUNTING" icon={TrendingUp} label="Financials" />
             <NavItem id="CUSTOMERS" icon={Users} label="Builders Ledger" />
             
-            <div className="mt-8 mb-2 px-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">Intelligence</div>
+            <div className="mt-6 mb-2 px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Intelligence</div>
             <NavItem id="CONSULTANT" icon={BrainCircuit} label="Ask Consultant" />
           </nav>
 
-          <div className="p-6 bg-gradient-to-t from-white to-transparent">
-            <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+          <div className="p-4 bg-gradient-to-t from-white to-transparent">
+            <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Powered By</p>
-               <div className="flex items-center gap-2 mb-2">
-                 <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                 <span className="text-xs font-semibold text-gray-700">Aitek & Gemini</span>
+               <div className="flex items-center gap-1.5 mb-2">
+                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                 <span className="text-[11px] font-semibold text-gray-700">Aitek & Gemini</span>
                </div>
                <div className="h-px bg-gray-100 w-full my-2"></div>
                <p className="text-[10px] text-gray-400">Created by <span className="text-blue-600 font-semibold">Emilio AI</span></p>
@@ -80,7 +80,7 @@ const App: React.FC = () => {
         {/* Mobile Header */}
         <header className="md:hidden bg-white/80 backdrop-blur-md border-b border-gray-200 p-4 sticky top-0 z-40 flex justify-between items-center">
           <div>
-            <h1 className="text-lg font-bold text-gray-900 tracking-tight">Engr Quilang Hardware</h1>
+            <h1 className="text-base font-bold text-gray-900 tracking-tight">Engr Quilang Hardware</h1>
             <p className="text-[10px] text-gray-500 font-medium">Powered by AitekPh</p>
           </div>
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 bg-gray-100 rounded-full">
@@ -92,8 +92,8 @@ const App: React.FC = () => {
         {mobileMenuOpen && (
           <div className="md:hidden fixed inset-0 z-50 bg-white/95 backdrop-blur-xl p-6 animate-in slide-in-from-top-10 fade-in duration-200">
              <div className="flex justify-between items-center mb-8">
-                <h2 className="text-2xl font-bold">Menu</h2>
-                <button onClick={() => setMobileMenuOpen(false)} className="text-gray-500 font-medium">Close</button>
+                <h2 className="text-xl font-bold">Menu</h2>
+                <button onClick={() => setMobileMenuOpen(false)} className="text-gray-500 font-medium text-sm">Close</button>
              </div>
              <nav className="space-y-2">
                 <NavItem id="POS" icon={LayoutGrid} label="Point of Sale" />
@@ -102,7 +102,7 @@ const App: React.FC = () => {
                 <NavItem id="CUSTOMERS" icon={Users} label="Builders Ledger" />
                 <NavItem id="CONSULTANT" icon={BrainCircuit} label="AI Consultant" />
              </nav>
-             <div className="mt-12 text-center text-xs text-gray-400">
+             <div className="mt-12 text-center text-[10px] text-gray-400">
                <p>Created by Emilio AI</p>
              </div>
           </div>

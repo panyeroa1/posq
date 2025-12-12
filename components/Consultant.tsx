@@ -41,12 +41,12 @@ const Consultant: React.FC = () => {
       <div className="bg-white rounded-[40px] shadow-xl border border-gray-100 flex-1 flex flex-col overflow-hidden relative">
         {/* Header */}
         <div className="bg-white/80 backdrop-blur-xl border-b border-gray-100 p-6 flex items-center gap-4 z-10 sticky top-0">
-          <div className="w-12 h-12 bg-gradient-to-tr from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-200">
-             <BrainCircuit className="w-6 h-6 text-white" />
+          <div className="w-10 h-10 bg-gradient-to-tr from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-200">
+             <BrainCircuit className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="font-bold text-xl text-gray-900 tracking-tight">Strategy Consultant</h2>
-            <p className="text-xs font-medium text-gray-500 flex items-center gap-1">
+            <h2 className="font-bold text-lg text-gray-900 tracking-tight">Strategy Consultant</h2>
+            <p className="text-[10px] font-medium text-gray-500 flex items-center gap-1">
                <Sparkles className="w-3 h-3 text-purple-500" /> Powered by AitekPH
             </p>
           </div>
@@ -56,16 +56,16 @@ const Consultant: React.FC = () => {
         <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-white">
            {messages.length === 0 && (
              <div className="flex flex-col items-center justify-center h-full text-center p-8 opacity-50">
-               <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6">
-                 <BrainCircuit className="w-10 h-10 text-gray-300" />
+               <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6">
+                 <BrainCircuit className="w-8 h-8 text-gray-300" />
                </div>
-               <h3 className="text-2xl font-bold text-gray-900 mb-2">How can I help you grow?</h3>
-               <p className="text-gray-500 max-w-sm">I can analyze your inventory and sales to suggest pricing, stocking, and sales strategies.</p>
+               <h3 className="text-xl font-bold text-gray-900 mb-2">How can I help you grow?</h3>
+               <p className="text-gray-500 max-w-xs text-sm">I can analyze your inventory and sales to suggest pricing, stocking, and sales strategies.</p>
              </div>
            )}
            {messages.map((msg, idx) => (
              <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-               <div className={`max-w-[85%] p-5 rounded-3xl shadow-sm text-[15px] leading-relaxed ${
+               <div className={`max-w-[85%] p-4 rounded-3xl shadow-sm text-sm leading-relaxed ${
                  msg.role === 'user' 
                  ? 'bg-blue-600 text-white rounded-br-none' 
                  : 'bg-[#F2F2F7] text-gray-900 rounded-bl-none'
@@ -76,10 +76,10 @@ const Consultant: React.FC = () => {
            ))}
            {loading && (
              <div className="flex justify-start">
-               <div className="bg-[#F2F2F7] p-5 rounded-3xl rounded-bl-none flex gap-2 items-center">
-                 <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
-                 <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-75"></span>
-                 <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-150"></span>
+               <div className="bg-[#F2F2F7] p-4 rounded-3xl rounded-bl-none flex gap-2 items-center">
+                 <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></span>
+                 <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce delay-75"></span>
+                 <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce delay-150"></span>
                </div>
              </div>
            )}
@@ -87,9 +87,9 @@ const Consultant: React.FC = () => {
 
         {/* Input Area */}
         <div className="p-6 bg-white border-t border-gray-100">
-          <div className="bg-gray-100 p-1.5 rounded-full flex items-center gap-2 pr-2 shadow-inner">
+          <div className="bg-gray-100 p-1 rounded-full flex items-center gap-2 pr-2 shadow-inner">
             <input 
-              className="flex-1 bg-transparent border-none px-6 py-3 focus:ring-0 outline-none text-gray-800 placeholder-gray-400 font-medium"
+              className="flex-1 bg-transparent border-none px-5 py-3 focus:ring-0 outline-none text-gray-800 placeholder-gray-400 font-medium text-sm"
               placeholder="Ask for strategic advice..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -98,7 +98,7 @@ const Consultant: React.FC = () => {
             <button 
               onClick={handleSend}
               disabled={loading || !input.trim()}
-              className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-md hover:bg-blue-700 disabled:opacity-50 transition-all btn-haptic"
+              className="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-md hover:bg-blue-700 disabled:opacity-50 transition-all btn-haptic"
             >
               <Send className="w-4 h-4 ml-0.5" />
             </button>
