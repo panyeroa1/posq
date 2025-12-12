@@ -69,7 +69,7 @@ const App: React.FC = () => {
                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Powered By</p>
                <div className="flex items-center gap-1.5 mb-2">
                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                 <span className="text-[11px] font-semibold text-gray-700">Aitek & Gemini</span>
+                 <span className="text-[11px] font-semibold text-gray-700">AitekPh</span>
                </div>
                <div className="h-px bg-gray-100 w-full my-2"></div>
                <p className="text-[10px] text-gray-400">Created by <span className="text-blue-600 font-semibold">Emilio AI</span></p>
