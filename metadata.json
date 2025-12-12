@@ -1,0 +1,8 @@
+{
+  "name": "Engr Quilang Hardware POS",
+  "description": "AI-Powered Point of Sale & Inventory Management for Hardware Stores featuring Voice Assistant 'Hardy'.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
