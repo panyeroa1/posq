@@ -81,7 +81,7 @@ const App: React.FC = () => {
         <header className="md:hidden bg-white/80 backdrop-blur-md border-b border-gray-200 p-4 sticky top-0 z-40 flex justify-between items-center">
           <div>
             <h1 className="text-lg font-bold text-gray-900 tracking-tight">Engr Quilang Hardware</h1>
-            <p className="text-[10px] text-gray-500 font-medium">Powered by Aitek & Gemini</p>
+            <p className="text-[10px] text-gray-500 font-medium">Powered by AitekPh</p>
           </div>
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 bg-gray-100 rounded-full">
             <Menu className="w-5 h-5 text-gray-700" />
