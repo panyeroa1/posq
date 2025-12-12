@@ -8,16 +8,14 @@ import { useStore } from '../context/StoreContext';
 const VoiceHardy: React.FC = () => {
   const [isActive, setIsActive] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [volume, setVolume] = useState(0); // For visualization
+  const [volume, setVolume] = useState(0); 
   
-  // Audio Refs
   const audioContextRef = useRef<AudioContext | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const processorRef = useRef<ScriptProcessorNode | null>(null);
   const nextStartTimeRef = useRef<number>(0);
-  const sessionRef = useRef<any>(null); // To store session object
+  const sessionRef = useRef<any>(null);
 
-  // Store Access for Tool Calling
   const { products, customers } = useStore();
 
   const stop = () => {
@@ -37,7 +35,7 @@ const VoiceHardy: React.FC = () => {
       audioContextRef.current = null;
     }
     if (sessionRef.current) {
-      sessionRef.current.close(); // Assuming close method exists or we just abandon
+      sessionRef.current.close();
       sessionRef.current = null;
     }
   };
@@ -52,8 +50,6 @@ const VoiceHardy: React.FC = () => {
     
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      
-      // Initialize Audio
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
       const audioCtx = new AudioContextClass({ sampleRate: 16000 });
       audioContextRef.current = audioCtx;
@@ -62,7 +58,6 @@ const VoiceHardy: React.FC = () => {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
-      // Output Context (for playback) - usually standard 48k or 24k
       const outputCtx = new AudioContextClass({ sampleRate: 24000 });
       
       const sessionPromise = ai.live.connect({
@@ -104,56 +99,42 @@ const VoiceHardy: React.FC = () => {
           onopen: () => {
             setIsConnecting(false);
             setIsActive(true);
-            
-            // Setup Input Stream
             const source = audioCtx.createMediaStreamSource(stream);
             const processor = audioCtx.createScriptProcessor(4096, 1, 1);
             processorRef.current = processor;
-
             processor.onaudioprocess = (e) => {
               const inputData = e.inputBuffer.getChannelData(0);
-              // Simple volume meter
               let sum = 0;
               for(let i=0; i<inputData.length; i++) sum += inputData[i] * inputData[i];
               setVolume(Math.sqrt(sum / inputData.length));
-
               const blob = createBlob(inputData);
-              sessionPromise.then(session => {
-                session.sendRealtimeInput({ media: blob });
-              });
+              sessionPromise.then(session => session.sendRealtimeInput({ media: blob }));
             };
-
             source.connect(processor);
             processor.connect(audioCtx.destination);
           },
           onmessage: async (msg: LiveServerMessage) => {
-             // Handle Audio Output
              const audioData = msg.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
              if (audioData) {
                const buffer = await decodeAudioData(decode(audioData), outputCtx, 24000, 1);
                const source = outputCtx.createBufferSource();
                source.buffer = buffer;
                source.connect(outputCtx.destination);
-               
                const now = outputCtx.currentTime;
-               // Ensure gapless playback
                const startTime = Math.max(now, nextStartTimeRef.current);
                source.start(startTime);
                nextStartTimeRef.current = startTime + buffer.duration;
              }
-
-             // Handle Tool Calls
              if (msg.toolCall) {
                for (const fc of msg.toolCall.functionCalls) {
                  let result = "Not found";
-                 
                  if (fc.name === 'checkInventory') {
                    const name = (fc.args as any).productName.toLowerCase();
                    const item = products.find(p => p.name.toLowerCase().includes(name));
                    if (item) {
                      result = `${item.name}: Price is ${item.price} pesos, Stock is ${item.stock} ${item.unit}.`;
                    } else {
-                     result = `Product ${name} not found in inventory.`;
+                     result = `Product ${name} not found.`;
                    }
                  } else if (fc.name === 'checkCustomerBalance') {
                    const name = (fc.args as any).customerName.toLowerCase();
@@ -164,32 +145,19 @@ const VoiceHardy: React.FC = () => {
                      result = `Customer ${name} not found.`;
                    }
                  }
-
                  sessionPromise.then(session => {
                    session.sendToolResponse({
-                     functionResponses: {
-                       id: fc.id,
-                       name: fc.name,
-                       response: { result }
-                     }
+                     functionResponses: { id: fc.id, name: fc.name, response: { result } }
                    });
                  });
                }
              }
           },
-          onclose: () => {
-             stop();
-          },
-          onerror: (err) => {
-             console.error(err);
-             stop();
-          }
+          onclose: () => stop(),
+          onerror: (err) => { console.error(err); stop(); }
         }
       });
-      
-      // Store session mainly to close it later
       sessionPromise.then(sess => sessionRef.current = sess);
-
     } catch (e) {
       console.error("Failed to connect", e);
       stop();
@@ -197,54 +165,36 @@ const VoiceHardy: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-24 right-4 md:bottom-8 md:right-8 z-50 flex flex-col items-end gap-2">
+    <div className="fixed bottom-24 right-6 md:bottom-10 md:right-10 z-50 flex flex-col items-end gap-3">
       {isActive && (
-        <div className="bg-black/80 text-white backdrop-blur-md p-4 rounded-2xl shadow-2xl w-64 mb-2 animate-in slide-in-from-bottom-5">
-           <div className="flex justify-between items-center mb-2">
-             <div className="flex items-center gap-2">
-               <span className="relative flex h-3 w-3">
+        <div className="bg-white/90 backdrop-blur-xl text-gray-900 p-5 rounded-[24px] shadow-2xl w-72 mb-2 animate-in slide-in-from-bottom-5 border border-white/50">
+           <div className="flex justify-between items-center mb-4">
+             <div className="flex items-center gap-3">
+               <div className="relative flex h-3 w-3">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                </span>
-               <span className="font-bold">Hardy is Live</span>
+                </div>
+               <div>
+                  <span className="font-bold text-sm block leading-none">Hardy</span>
+                  <span className="text-[10px] text-gray-500 font-medium">Powered by Aitek</span>
+               </div>
              </div>
-             <button onClick={stop}><X className="w-4 h-4" /></button>
+             <button onClick={stop} className="p-1 rounded-full hover:bg-gray-100"><X className="w-4 h-4 text-gray-500" /></button>
            </div>
-           <div className="h-8 bg-gray-800 rounded-full overflow-hidden flex items-center justify-center">
-              {/* Fake waveform based on volume */}
-              <div className="flex gap-1 items-center h-full">
+           <div className="h-12 bg-gray-100 rounded-2xl overflow-hidden flex items-center justify-center relative">
+              <div className="flex gap-1 items-center h-full z-10">
                  {[...Array(5)].map((_,i) => (
                    <div key={i} 
-                     className="w-1 bg-green-400 rounded-full transition-all duration-75"
+                     className="w-1.5 bg-gray-900 rounded-full transition-all duration-75"
                      style={{ height: `${Math.min(100, Math.max(20, volume * 500 * (Math.random() + 0.5)))}%` }}
                    />
                  ))}
               </div>
            </div>
-           <p className="text-xs text-gray-400 mt-2 text-center">"Tanungin mo lang ako Boss!"</p>
+           <p className="text-xs text-gray-400 mt-3 text-center font-medium">"Tanungin mo lang ako Boss!"</p>
         </div>
       )}
 
       <button
         onClick={isActive ? stop : start}
-        className={`w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-all transform hover:scale-105 active:scale-95 ${
-          isActive 
-            ? 'bg-rose-600 hover:bg-rose-700 animate-pulse' 
-            : isConnecting 
-              ? 'bg-yellow-500 cursor-wait'
-              : 'bg-gradient-to-br from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500'
-        }`}
-      >
-        {isConnecting ? (
-          <Activity className="w-8 h-8 text-white animate-spin" />
-        ) : isActive ? (
-          <MicOff className="w-8 h-8 text-white" />
-        ) : (
-          <Mic className="w-8 h-8 text-white" />
-        )}
-      </button>
-    </div>
-  );
-};
-
-export default VoiceHardy;
+        className={
