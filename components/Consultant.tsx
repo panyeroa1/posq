@@ -59,49 +59,52 @@ const Consultant: React.FC = () => {
   return (
     <div className="flex flex-col h-[calc(100vh-80px)] max-w-4xl mx-auto p-4">
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 flex-1 flex flex-col overflow-hidden">
-        <div className="bg-indigo-600 p-4 text-white flex items-center gap-3">
-          <div className="p-2 bg-white/20 rounded-lg">
-             <BrainCircuit className="w-6 h-6" />
+        <div className="bg-gradient-to-r from-indigo-600 to-violet-600 p-6 text-white flex items-center gap-4">
+          <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+             <BrainCircuit className="w-8 h-8" />
           </div>
           <div>
-            <h2 className="font-bold text-lg">Business Strategy Consultant</h2>
-            <p className="text-indigo-200 text-xs">Powered by Gemini 3 Pro (Reasoning)</p>
+            <h2 className="font-bold text-xl">Business Strategy Consultant</h2>
+            <p className="text-indigo-100 text-sm font-medium opacity-90">Powered by Gemini 3 Pro (Reasoning)</p>
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/50">
            {messages.length === 0 && (
              <div className="text-center text-gray-400 mt-20">
-               <Bot className="w-16 h-16 mx-auto mb-4 opacity-20" />
-               <p>Ask me about inventory optimization, pricing strategies, or sales trends.</p>
-               <p className="text-sm mt-2">Example: "How can I optimize cement stock based on sales?"</p>
+               <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                 <Bot className="w-12 h-12 opacity-30 text-indigo-500" />
+               </div>
+               <h3 className="text-lg font-semibold text-gray-600 mb-2">How can I help you strategize?</h3>
+               <p className="text-sm max-w-xs mx-auto">Ask about inventory optimization, pricing strategies, or sales trends.</p>
+               <p className="text-xs mt-4 bg-white border border-gray-200 inline-block px-3 py-1 rounded-full text-gray-500">Example: "How can I optimize cement stock?"</p>
              </div>
            )}
            {messages.map((msg, idx) => (
              <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-               <div className={`max-w-[80%] p-4 rounded-2xl ${
+               <div className={`max-w-[80%] p-5 rounded-2xl shadow-sm ${
                  msg.role === 'user' 
                  ? 'bg-indigo-600 text-white rounded-br-none' 
-                 : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none shadow-sm'
+                 : 'bg-white border border-gray-100 text-gray-800 rounded-bl-none'
                }`}>
-                 <p className="whitespace-pre-wrap">{msg.text}</p>
+                 <p className="whitespace-pre-wrap leading-relaxed">{msg.text}</p>
                </div>
              </div>
            ))}
            {loading && (
              <div className="flex justify-start">
-               <div className="bg-white border border-gray-200 p-4 rounded-2xl rounded-bl-none shadow-sm flex items-center gap-2 text-gray-500">
-                 <Loader2 className="w-4 h-4 animate-spin" />
-                 <span className="text-sm">Analyzing market data...</span>
+               <div className="bg-white border border-gray-200 p-4 rounded-2xl rounded-bl-none shadow-sm flex items-center gap-3 text-gray-500">
+                 <Loader2 className="w-5 h-5 animate-spin text-indigo-500" />
+                 <span className="text-sm font-medium">Analyzing market data...</span>
                </div>
              </div>
            )}
         </div>
 
         <div className="p-4 bg-white border-t border-gray-100">
-          <div className="flex gap-2">
+          <div className="flex gap-2 relative">
             <input 
-              className="flex-1 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="flex-1 border border-gray-300 rounded-xl pl-5 pr-12 py-4 focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm"
               placeholder="Ask for strategic advice..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -110,7 +113,7 @@ const Consultant: React.FC = () => {
             <button 
               onClick={handleSend}
               disabled={loading || !input.trim()}
-              className="bg-indigo-600 text-white p-3 rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+              className="absolute right-2 top-2 bottom-2 bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors shadow-sm aspect-square flex items-center justify-center"
             >
               <Send className="w-5 h-5" />
             </button>

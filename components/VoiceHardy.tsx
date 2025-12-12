@@ -229,10 +229,10 @@ const VoiceHardy: React.FC = () => {
         onClick={isActive ? stop : start}
         className={`w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-all transform hover:scale-105 active:scale-95 ${
           isActive 
-            ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+            ? 'bg-rose-600 hover:bg-rose-700 animate-pulse' 
             : isConnecting 
               ? 'bg-yellow-500 cursor-wait'
-              : 'bg-gradient-to-br from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500'
+              : 'bg-gradient-to-br from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500'
         }`}
       >
         {isConnecting ? (

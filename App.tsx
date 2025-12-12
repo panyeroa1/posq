@@ -29,7 +29,7 @@ const App: React.FC = () => {
       onClick={() => setView(id)}
       className={`flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-3 p-2 md:px-6 md:py-3 rounded-xl transition-all
         ${view === id 
-          ? 'text-blue-600 bg-blue-50 font-bold' 
+          ? 'text-indigo-600 bg-indigo-50 font-bold' 
           : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
     >
       <Icon className="w-6 h-6 md:w-5 md:h-5" />
@@ -39,12 +39,14 @@ const App: React.FC = () => {
 
   return (
     <StoreProvider>
-      <div className="min-h-screen bg-gray-100 flex flex-col md:flex-row">
+      <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row font-sans">
         
         {/* Desktop Sidebar */}
         <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 h-screen sticky top-0 z-30">
           <div className="p-6 border-b border-gray-100">
-            <h1 className="text-xl font-extrabold text-blue-900 leading-tight">Engr Quilang<br/>Hardware POS</h1>
+            <h1 className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600 leading-tight">
+              Engr Quilang<br/>Hardware POS
+            </h1>
           </div>
           <nav className="flex-1 p-4 space-y-2">
             <NavItem id="POS" icon={LayoutGrid} label="Point of Sale" />
@@ -62,7 +64,9 @@ const App: React.FC = () => {
 
         {/* Mobile Header */}
         <header className="md:hidden bg-white border-b border-gray-200 p-4 sticky top-0 z-30">
-          <h1 className="text-lg font-extrabold text-blue-900">Engr Quilang Hardware</h1>
+          <h1 className="text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
+            Engr Quilang Hardware
+          </h1>
         </header>
 
         {/* Main Content */}

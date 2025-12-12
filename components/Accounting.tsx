@@ -103,9 +103,9 @@ const Accounting: React.FC = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-green-100 text-green-600 rounded-lg">
+            <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
               <TrendingUp className="w-5 h-5" />
             </div>
             <span className="text-gray-500 text-sm font-medium">Total Revenue</span>
@@ -113,9 +113,9 @@ const Accounting: React.FC = () => {
           <p className="text-2xl font-bold text-gray-900">₱{totalRevenue.toLocaleString()}</p>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex items-center gap-3 mb-2">
-             <div className="p-2 bg-red-100 text-red-600 rounded-lg">
+             <div className="p-2 bg-rose-100 text-rose-600 rounded-lg">
               <TrendingDown className="w-5 h-5" />
             </div>
             <span className="text-gray-500 text-sm font-medium">Total Expenses</span>
@@ -123,41 +123,41 @@ const Accounting: React.FC = () => {
           <p className="text-2xl font-bold text-gray-900">₱{totalExpenses.toLocaleString()}</p>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex items-center gap-3 mb-2">
-             <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
+             <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
               <DollarSign className="w-5 h-5" />
             </div>
             <span className="text-gray-500 text-sm font-medium">Net Profit</span>
           </div>
-          <p className={`text-2xl font-bold ${profit >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+          <p className={`text-2xl font-bold ${profit >= 0 ? 'text-indigo-600' : 'text-rose-600'}`}>
             ₱{profit.toLocaleString()}
           </p>
         </div>
       </div>
 
       {/* Main Chart */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-80">
-        <h3 className="font-bold text-gray-700 mb-4">7-Day Performance</h3>
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-80">
+        <h3 className="font-bold text-gray-700 mb-6">7-Day Performance</h3>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="date" axisLine={false} tickLine={false} />
-            <YAxis axisLine={false} tickLine={false} />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+            <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: '#9ca3af', fontSize: 12}} />
+            <YAxis axisLine={false} tickLine={false} tick={{fill: '#9ca3af', fontSize: 12}} />
             <Tooltip 
-              contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+              contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
             />
-            <Bar dataKey="revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Revenue" />
-            <Bar dataKey="expense" fill="#ef4444" radius={[4, 4, 0, 0]} name="Expense" />
+            <Bar dataKey="revenue" fill="#6366f1" radius={[6, 6, 0, 0]} name="Revenue" />
+            <Bar dataKey="expense" fill="#f43f5e" radius={[6, 6, 0, 0]} name="Expense" />
           </BarChart>
         </ResponsiveContainer>
       </div>
 
       {/* AI Receipt Scanner */}
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-6 text-white flex items-center justify-between">
-        <div>
-          <h3 className="text-xl font-bold mb-1">Auto-Expense Scanner</h3>
-          <p className="text-indigo-100 text-sm opacity-90">Snap a photo of any receipt to log it automatically.</p>
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl p-8 text-white flex flex-col md:flex-row items-center justify-between shadow-xl shadow-indigo-100">
+        <div className="mb-4 md:mb-0">
+          <h3 className="text-2xl font-bold mb-2">Auto-Expense Scanner</h3>
+          <p className="text-indigo-100 opacity-90 max-w-lg">Snap a photo of any physical receipt. Our AI Vision will extract the merchant, date, and amount automatically.</p>
         </div>
         <div className="flex items-center gap-3">
           <input 
@@ -171,7 +171,7 @@ const Accounting: React.FC = () => {
           <button 
             onClick={() => fileInputRef.current?.click()}
             disabled={scanStatus === 'processing'}
-            className="bg-white text-indigo-600 px-4 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-indigo-50 transition-colors shadow-lg disabled:opacity-50"
+            className="bg-white text-indigo-700 px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-indigo-50 transition-colors shadow-lg disabled:opacity-50"
           >
             {scanStatus === 'processing' ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -180,27 +180,27 @@ const Accounting: React.FC = () => {
             ) : (
               <Camera className="w-5 h-5" />
             )}
-            {scanStatus === 'processing' ? 'Scanning...' : 'Scan Receipt'}
+            {scanStatus === 'processing' ? 'Processing...' : 'Scan Receipt'}
           </button>
         </div>
       </div>
 
       {/* Recent Expenses List */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="p-4 border-b border-gray-100">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="p-4 border-b border-gray-100 bg-gray-50/50">
           <h3 className="font-bold text-gray-800">Recent Expenses</h3>
         </div>
         <div className="divide-y divide-gray-100">
           {expenses.length === 0 ? (
-            <p className="p-6 text-center text-gray-400">No expenses recorded yet.</p>
+            <p className="p-8 text-center text-gray-400">No expenses recorded yet.</p>
           ) : (
             expenses.slice(0, 5).map(exp => (
-              <div key={exp.id} className="p-4 flex justify-between items-center">
+              <div key={exp.id} className="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
                 <div>
-                  <p className="font-medium text-gray-800">{exp.description}</p>
-                  <p className="text-xs text-gray-500">{exp.date} • {exp.category}</p>
+                  <p className="font-semibold text-gray-800">{exp.description}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{exp.date} • <span className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-600">{exp.category}</span></p>
                 </div>
-                <span className="font-mono text-red-600 font-medium">-₱{exp.amount.toLocaleString()}</span>
+                <span className="font-mono text-rose-600 font-bold">-₱{exp.amount.toLocaleString()}</span>
               </div>
             ))
           )}
