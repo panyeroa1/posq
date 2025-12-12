@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Mic, MicOff, X, Activity } from 'lucide-react';
+import { Mic, MicOff, X, Activity, GripHorizontal } from 'lucide-react';
 import { GoogleGenAI, LiveServerMessage, Modality, Type } from '@google/genai';
 import { HARDY_SYSTEM_INSTRUCTION } from '../constants';
 import { createBlob, decode, decodeAudioData } from '../services/audioUtils';
@@ -17,6 +17,20 @@ const VoiceHardy: React.FC = () => {
   const sessionRef = useRef<any>(null);
 
   const { products, customers } = useStore();
+
+  // Dragging State
+  const [pos, setPos] = useState<{x: number, y: number} | null>(null);
+  const isDraggingRef = useRef(false);
+  const dragStartOffsetRef = useRef({ x: 0, y: 0 });
+  const hasMovedRef = useRef(false);
+
+  useEffect(() => {
+    // Initial position: Bottom Right
+    setPos({ 
+      x: window.innerWidth - 80, 
+      y: window.innerHeight - 100 
+    });
+  }, []);
 
   const stop = () => {
     setIsActive(false);
@@ -164,37 +178,116 @@ const VoiceHardy: React.FC = () => {
     }
   };
 
-  return (
-    <div className="fixed bottom-24 right-6 md:bottom-10 md:right-10 z-50 flex flex-col items-end gap-3">
-      {isActive && (
-        <div className="bg-white/90 backdrop-blur-xl text-gray-900 p-5 rounded-[24px] shadow-2xl w-72 mb-2 animate-in slide-in-from-bottom-5 border border-white/50">
-           <div className="flex justify-between items-center mb-4">
-             <div className="flex items-center gap-3">
-               <div className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                </div>
-               <div>
-                  <span className="font-bold text-sm block leading-none">Hardy</span>
-                  <span className="text-[10px] text-gray-500 font-medium">Powered by Aitek</span>
-               </div>
-             </div>
-             <button onClick={stop} className="p-1 rounded-full hover:bg-gray-100"><X className="w-4 h-4 text-gray-500" /></button>
-           </div>
-           <div className="h-12 bg-gray-100 rounded-2xl overflow-hidden flex items-center justify-center relative">
-              <div className="flex gap-1 items-center h-full z-10">
-                 {[...Array(5)].map((_,i) => (
-                   <div key={i} 
-                     className="w-1.5 bg-gray-900 rounded-full transition-all duration-75"
-                     style={{ height: `${Math.min(100, Math.max(20, volume * 500 * (Math.random() + 0.5)))}%` }}
-                   />
-                 ))}
-              </div>
-           </div>
-           <p className="text-xs text-gray-400 mt-3 text-center font-medium">"Tanungin mo lang ako Boss!"</p>
-        </div>
-      )}
+  const handlePointerDown = (e: React.PointerEvent) => {
+    isDraggingRef.current = true;
+    hasMovedRef.current = false;
+    if (pos) {
+      dragStartOffsetRef.current = {
+        x: e.clientX - pos.x,
+        y: e.clientY - pos.y
+      };
+    }
+    (e.target as Element).setPointerCapture(e.pointerId);
+  };
 
-      <button
-        onClick={isActive ? stop : start}
-        className={
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDraggingRef.current) return;
+    
+    // Calculate distance moved to determine if it's a drag or click
+    if (!hasMovedRef.current) {
+        // We can add a threshold here if needed, but for now any move counts as intention to drag
+        hasMovedRef.current = true;
+    }
+    
+    e.preventDefault();
+    const newX = e.clientX - dragStartOffsetRef.current.x;
+    const newY = e.clientY - dragStartOffsetRef.current.y;
+    
+    // Boundary checks (keep fully on screen)
+    const maxX = window.innerWidth - 64; // button width roughly
+    const maxY = window.innerHeight - 64; 
+    
+    setPos({ 
+      x: Math.min(Math.max(0, newX), maxX), 
+      y: Math.min(Math.max(0, newY), maxY) 
+    });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    isDraggingRef.current = false;
+    (e.target as Element).releasePointerCapture(e.pointerId);
+    
+    // If not dragged (just clicked), toggle state
+    if (!hasMovedRef.current) {
+        if (isActive) stop(); else start();
+    }
+  };
+
+  if (!pos) return null;
+
+  return (
+    <div 
+        style={{ left: pos.x, top: pos.y }}
+        className="fixed z-50 touch-none"
+    >
+      <div className="relative">
+        {isActive && (
+            <div className="absolute bottom-full right-0 mb-4 w-72 bg-white/90 backdrop-blur-xl text-gray-900 p-5 rounded-[24px] shadow-2xl border border-white/50 animate-in slide-in-from-bottom-5">
+            <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-3">
+                <div className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                    </div>
+                <div>
+                    <span className="font-bold text-sm block leading-none">Hardy</span>
+                    <span className="text-[10px] text-gray-500 font-medium">Powered by Aitek</span>
+                </div>
+                </div>
+                <button 
+                  onPointerUp={(e) => { e.stopPropagation(); stop(); }} // Stop propagation so it doesn't trigger the drag/toggle logic of parent
+                  className="p-1 rounded-full hover:bg-gray-100"
+                >
+                    <X className="w-4 h-4 text-gray-500" />
+                </button>
+            </div>
+            <div className="h-12 bg-gray-100 rounded-2xl overflow-hidden flex items-center justify-center relative">
+                <div className="flex gap-1 items-center h-full z-10">
+                    {[...Array(5)].map((_,i) => (
+                    <div key={i} 
+                        className="w-1.5 bg-gray-900 rounded-full transition-all duration-75"
+                        style={{ height: `${Math.min(100, Math.max(20, volume * 500 * (Math.random() + 0.5)))}%` }}
+                    />
+                    ))}
+                </div>
+            </div>
+            <p className="text-xs text-gray-400 mt-3 text-center font-medium">"Tanungin mo lang ako Boss!"</p>
+            </div>
+        )}
+
+        <button
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            className={`w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-transform active:scale-95 border-4 border-white/20 backdrop-blur-md cursor-grab active:cursor-grabbing ${
+            isActive 
+                ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+                : isConnecting 
+                ? 'bg-yellow-500 cursor-wait'
+                : 'bg-black hover:bg-gray-900'
+            }`}
+        >
+            {isConnecting ? (
+                <Activity className="w-6 h-6 text-white animate-spin" />
+            ) : isActive ? (
+                <MicOff className="w-6 h-6 text-white" />
+            ) : (
+                <Mic className="w-6 h-6 text-white" />
+            )}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default VoiceHardy;
